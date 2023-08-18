@@ -48,18 +48,36 @@ public class CustomerServlet extends HttpServlet {
         String id = req.getParameter("id");
         String name = req.getParameter("name");
         String address = req.getParameter("address");
+        String salary = req.getParameter("salary");
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/posdb", "root", "1234");
-            double salary = Double.parseDouble(req.getParameter("salary"));
+
             PreparedStatement pstm = connection.prepareStatement("insert into Customer values(?,?,?,?)");
             pstm.setObject(1,id);
             pstm.setObject(2,name);
             pstm.setObject(3,address);
             pstm.setObject(4,salary);
             boolean b = pstm.executeUpdate() > 0;
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException(e);
+            if (b){
+                JsonObjectBuilder responseObject = Json.createObjectBuilder();
+                responseObject.add("state","Ok");
+                responseObject.add("message","Successfully added..!");
+                responseObject.add("data","");
+                resp.getWriter().print(responseObject.build());
+            }
+        } catch (ClassNotFoundException e) {
+            JsonObjectBuilder error = Json.createObjectBuilder();
+            error.add("state","Ok");
+            error.add("message",e.getLocalizedMessage());
+            error.add("data","");
+            resp.getWriter().print(error.build());
+        }catch (SQLException e) {
+            JsonObjectBuilder error = Json.createObjectBuilder();
+            error.add("state","Error");
+            error.add("message",e.getLocalizedMessage());
+            error.add("data","");
+            resp.getWriter().print(error.build());
         }
     }
 
