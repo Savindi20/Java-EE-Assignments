@@ -71,13 +71,16 @@ public class CustomerServlet extends HttpServlet {
             error.add("state","Ok");
             error.add("message",e.getLocalizedMessage());
             error.add("data","");
+//            resp.setStatus(500);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().print(error.build());
         }catch (SQLException e) {
             JsonObjectBuilder error = Json.createObjectBuilder();
             error.add("state","Error");
             error.add("message",e.getLocalizedMessage());
             error.add("data","");
-            resp.setStatus(500);
+//            resp.setStatus(400);
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().print(error.build());
         }
     }
