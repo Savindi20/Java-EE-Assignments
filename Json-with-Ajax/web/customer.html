@@ -124,8 +124,13 @@
         $.ajax({
             url:"Customer?id="+id,
             method:"delete",
-            success:function(res){
+            success:function(resp){
                 getAllCustomers();
+                alert(resp.message);
+            },
+            error:function (error){
+               let message = JSON.parse(error.responseText).message;
+                alert(message);
             }
         });
     });

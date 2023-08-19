@@ -90,14 +90,36 @@ public class CustomerServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
+        resp.setContentType("application/json");
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/posdb", "root", "1234");
             PreparedStatement pstm = connection.prepareStatement("delete from Customer where id=?");
             pstm.setObject(1,id);
             boolean b = pstm.executeUpdate() > 0;
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException(e);
+            if (b) {
+                JsonObjectBuilder rjo = Json.createObjectBuilder();
+                rjo.add("state","Ok");
+                rjo.add("message","Successfully Deleted..!");
+                rjo.add("data","");
+                resp.getWriter().print(rjo.build());
+            }else {
+                throw new RuntimeException("There is no Customer for that ID..!");
+            }
+        } catch (RuntimeException e) {
+            JsonObjectBuilder rjo = Json.createObjectBuilder();
+            rjo.add("state","Error");
+            rjo.add("message",e.getLocalizedMessage());
+            rjo.add("data","");
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().print(rjo.build());
+        }catch (ClassNotFoundException | SQLException e){
+            JsonObjectBuilder rjo = Json.createObjectBuilder();
+            rjo.add("state","Error");
+            rjo.add("message",e.getLocalizedMessage());
+            rjo.add("data","");
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().print(rjo.build());
         }
     }
 
