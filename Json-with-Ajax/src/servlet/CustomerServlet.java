@@ -77,6 +77,7 @@ public class CustomerServlet extends HttpServlet {
             error.add("state","Error");
             error.add("message",e.getLocalizedMessage());
             error.add("data","");
+            resp.setStatus(500);
             resp.getWriter().print(error.build());
         }
     }
