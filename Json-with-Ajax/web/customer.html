@@ -152,8 +152,14 @@
             method:"put",
             contentType:"application/json",
             data:JSON.stringify(customerOb),
-            success:function(res){
+            dataType: "json",
+            success:function(resp){
                 getAllCustomers();
+                alert(resp.message);
+            },
+            error:function (error){
+                let message = JSON.parse(error.responseText).message;
+                alert(message);
             }
         });
     });
