@@ -33,6 +33,7 @@ public class CustomerServlet extends HttpServlet {
                 allCustomers.add(customer.build());
             }
             resp.addHeader("Content-Type","application/json");
+            resp.addHeader("Access-Control-Allow-Origin","*");
 
             JsonObjectBuilder job = Json.createObjectBuilder();
             job.add("state","OK");
@@ -58,6 +59,7 @@ public class CustomerServlet extends HttpServlet {
         String name = req.getParameter("name");
         String address = req.getParameter("address");
         String salary = req.getParameter("salary");
+        resp.addHeader("Access-Control-Allow-Origin","*");
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/posdb", "root", "1234");
@@ -100,6 +102,7 @@ public class CustomerServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
         resp.setContentType("application/json");
+        resp.addHeader("Access-Control-Allow-Origin","*");
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/posdb", "root", "1234");
@@ -142,6 +145,7 @@ public class CustomerServlet extends HttpServlet {
         String name = customer.getString("name");
         String address = customer.getString("address");
         String salary = customer.getString("salary");
+        resp.addHeader("Access-Control-Allow-Origin","*");
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/posdb", "root", "1234");
@@ -176,5 +180,12 @@ public class CustomerServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().print(rjo.build());
         }
+    }
+
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.addHeader("Access-Control-Allow-Origin","*");
+        resp.addHeader("Access-Control-Allow-Methods","DELETE,PUT");
+        resp.addHeader("Access-Control-Allow-Headers","content-type");
     }
 }
